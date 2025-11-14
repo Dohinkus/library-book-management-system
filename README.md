@@ -18,7 +18,7 @@ The project follows a layered architecture with clear separation between the use
 
 All Java source code is located under:
 
-src/main/java/edu/group2/lbms/
+src/main/java/lbms/
 
 The following packages are used:
 

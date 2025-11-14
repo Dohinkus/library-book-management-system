@@ -21,7 +21,6 @@ git checkout main
 git pull
 git checkout -b feature/<short-description>-<your-name>
 ```
-
 # then creating your feature branch
 Examples:
 ```

@@ -17,15 +17,13 @@ Example:
 
 ## Areas Affected
 
-Select all that apply:
-
-- [ ] GUI (JavaFX controllers or FXML)
-- [ ] BO (business logic)
-- [ ] DAO (database access and SQL)
-- [ ] Utils (shared utilities)
-- [ ] Model (entity classes)
-- [ ] Database schema or SQL files
-- [ ] Documentation
+- GUI (JavaFX controllers or FXML)
+- BO (business logic)
+- DAO (database access and SQL)
+- Utils (shared utilities)
+- Model (entity classes)
+- Database schema or SQL files
+- Documentation
 
 ---
 
@@ -43,10 +41,10 @@ Example:
 
 List the tests you performed:
 
-- [ ] Application builds without compilation errors
-- [ ] Feature works as expected when running the application
-- [ ] SQL queries operate correctly (if applicable)
-- [ ] No unrelated features were broken during development
+- Application builds without compilation errors
+- Feature works as expected when running the application
+- SQL queries operate correctly (if applicable)
+- No unrelated features were broken during development
 
 ---
 

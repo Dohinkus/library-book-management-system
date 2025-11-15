@@ -85,7 +85,7 @@ Do not merge your own pull request unless explicitly instructed.
 
 All Java code is stored under:
 
-src/main/java/edu/group2/lbms/
+src/main/java/lbms/
 
 Package organization:
 

@@ -78,13 +78,13 @@ TODO Fill this out
 
 ## Team Members and Roles
 
-Christian McCool       Project Manager and repository maintainer
-Erik Barbieri          Backend (BO and DAO collaboration)
-Elisa Garcia           Backend (BO and DAO collaboration)
-Everette Carrig        Database design and DAO
-William Henderson      Database design and DAO
-Brycen Canion          GUI development with JavaFX
-Brianna Hendrix        Documentation, quality assurance, testing, and demo preparation
+- Christian McCool:       Project Manager
+- Erik Barbieri:          Backend (BO and DAO collaboration) and repository maintainer
+- Elisa Garcia:           Backend (BO and DAO collaboration)
+- Everette Carrig:        Database design
+- William Henderson:      Database design
+- Brycen Canion:          GUI development with JavaFX
+- Brianna Hendrix:        Documentation, quality assurance, testing, and demo preparation
 
 All members are encouraged to assist outside their primary role as needed.
 
@@ -94,11 +94,11 @@ All members are encouraged to assist outside their primary role as needed.
 
 The following documents are provided:
 
-- CONTRIBUTING.md           How to work on the project
-- docs/COMMIT_MESSAGES.md   Commit message rules
-- docs/design-decisions.md  Architectural and technical decisions
-- docs/test-plan.md         QA testing procedures
-- db/schema.sql             Database schema
+- CONTRIBUTING.md:           How to work on the project
+- docs/COMMIT_MESSAGES.md:   Commit message rules
+- docs/design-decisions.md:  Architectural and technical decisions
+- docs/test-plan.md:         QA testing procedures
+- db/schema.sql:             Database schema
 
 ---
 

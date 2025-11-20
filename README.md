@@ -31,8 +31,11 @@ The following packages are used:
 Database files are located under:
 
 db/
-    schema.sql
+    drop-all-tables.sql
+    mysql-ddl.sql
+    relational-schema.sql
     seed-data.sql
+    views.sql
     (optional) erd-diagram.drawio or ERD export
 
 Documentation is located under:

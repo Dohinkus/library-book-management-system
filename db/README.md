@@ -1,115 +1,84 @@
-This directory contains all MySQL database files used by the Library Book Management System (LBMS).
-It includes the full schema, seed data, and supporting scripts for creating and initializing the database.
+# Database Scripts Overview (db/ directory)
 
-Contents
+This folder contains all SQL files used to create, reset, and seed the LBMS database for the project. Each file has a specific purpose. The descriptions below explain what each file is, who would use it, when it should be used, and how to run it.
 
-schema.sql
-Full MySQL DDL for all tables, constraints, and relationships.
+# Typical usage order:
+
+drop-all-tables.sql (optional, for resets)
+
+mysql-ddl.sql
+
+views.sql
+
+seed-data.sql (if sample data is needed)
+
+# More information
+
+drop-all-tables.sql
+What this file is:
+A reset script that forcefully removes all tables from the LBMS database.
+
+Who uses it:
+Developers or instructors who need to wipe the database during testing or before rebuilding it.
+
+When it is used:
+Before recreating the schema, or when starting fresh during development.
+
+How to use it:
+Run it directly in MySQL. Example:
+mysql < drop-all-tables.sql
+
+mysql-ddl.sql
+What this file is:
+The main schema definition for the LBMS database. It creates the database, tables, indexes, and foreign keys.
+
+Who uses it:
+Anyone who needs to create the actual database structure (developers, instructors, automated setup scripts).
+
+When it is used:
+After resetting the database or when setting up the database for the first time.
+
+How to use it:
+Run this file after drop-all-tables.sql. Example:
+mysql < mysql-ddl.sql
+
+relational-schema.sql
+What this file is:
+A non-executable description of the database tables in a logical/schema notation. It documents the relational design but is not meant to be run by MySQL.
+
+Who uses it:
+Students, reviewers, and instructors reading the design. It is for understanding structure, not building the database.
+
+When it is used:
+During design review or when referencing how tables relate conceptually.
+
+How to use it:
+Do not run this file. Read it for documentation only.
 
 seed-data.sql
-Sample data for testing (publishers, authors, books, accounts, checkouts, waitlist).
+What this file is:
+A data seeding script that fills the LBMS database with example data for testing (publishers, authors, books, accounts, checkouts, etc.).
 
-README.md
-This documentation file.
+Who uses it:
+Anyone who needs test data in a fresh database.
 
-Requirements
+When it is used:
+After the schema has been created and you need a working dataset to test system features.
 
-MySQL 8.0 or higher
-MySQL Workbench recommended
-Database name: LBMS
+How to use it:
+Run it after mysql-ddl.sql. Example:
+mysql < seed-data.sql
 
-To create the database manually:
+views.sql
+What this file is:
+A script that creates database views such as BookAvailability and ActiveCheckouts. These views simplify common queries.
 
-CREATE DATABASE IF NOT EXISTS LBMS;
-USE LBMS;
+Who uses it:
+Developers and instructors who need the derived views available in the database.
 
-Setup Instructions
+When it is used:
+After the tables are created (mysql-ddl.sql). Views depend on the schema existing first.
 
-Run the schema file:
-
-SOURCE schema.sql;
-
-Load optional seed data:
-
-SOURCE seed-data.sql;
-
-The seed data includes example publishers, authors, books, series, accounts, checkouts, and waitlist entries.
-This allows the team to immediately test the JavaFX application and backend.
-
-Password Hashing Note
-
-AppAccount stores the following:
-
-Password: SHA-256 hash
-Salt: randomly generated 32 bytes
-
-Real passwords must be hashed at runtime using:
-
-byte[] salt = PasswordUtils.generateSalt();
-byte[] hash = PasswordUtils.hashPassword(rawPassword, salt);
-
-Seed accounts use placeholder values (0x01 for both Password and Salt).
-This keeps the seed script simple and allows the backend to replace these values with real hashes.
-
-Schema Overview
-
-The schema includes the following main parts:
-
-Book
-PhysicalBook
-DigitalBook
-Author and BookAuthor (many-to-many)
-Publisher
-Series and Volume
-AppAccount
-EmployeeAcc and MemberAcc
-CheckOut
-WaitList
-
-Book availability is not stored. It is always calculated from:
-
-Quantity minus count of active checkouts.
-
-Waitlist entries are ordered by DatePlaced. No waitlist position column is used.
-
-Transaction Safety
-
-Checkout and return operations in the Java backend use database transactions.
-checkoutBook uses SELECT ... FOR UPDATE on Book to prevent race conditions.
-returnBook updates ReturnDate inside a transaction.
-
-Development Tips
-
-To reset the database:
-
-SOURCE drop-all.sql;
-SOURCE schema.sql;
-SOURCE seed-data.sql;
-
-To check availability manually:
-
-SELECT b.ISBN, b.Title,
-b.Quantity - COUNT(c.ISBN) AS AvailableCopies
-FROM Book b
-LEFT JOIN CheckOut c ON b.ISBN = c.ISBN AND c.ReturnDate IS NULL
-WHERE b.ISBN = '9780451524935'
-GROUP BY b.ISBN;
-
-To view the waitlist for a specific book:
-
-SELECT * FROM WaitList
-WHERE ISBN = '9780345391803'
-ORDER BY DatePlaced;
-
-Testing Checklist
-
-Insert a new book
-Edit book metadata
-Delete a book (only when Quantity = 0 and no active checkouts)
-Search by title or ISBN
-Create librarian and member accounts
-Test login for both roles
-Perform checkout
-Perform return
-Add user to waitlist
-Show waitlist ordering
+How to use it:
+Run it any time after the schema exists. Example:
+mysql < views.sql

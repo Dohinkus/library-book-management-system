@@ -29,3 +29,22 @@ public class PasswordUtils {
         return Arrays.equals(hash, expectedHash);
     }
 }
+
+/*
+// Example usage (e.g., in a registration method, not necessarily part of DAO):
+byte[] salt = PasswordUtils.generateSalt();
+byte[] hash = PasswordUtils.hashPassword(rawPassword, salt);
+
+AppAccount acc = new AppAccount(
+    username,
+    hash,
+    salt,
+    email,
+    phone,
+    firstName,
+    lastName,
+    address,
+    role
+);
+appAccountDAO.insert(acc);
+*/

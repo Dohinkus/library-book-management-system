@@ -31,7 +31,7 @@ public class LoginController {
 
         try {
             AppAccountDAO dao = new AppAccountDAO();
-            // uses the backend to validate username + password
+            // uses the backend to validate username and password
             account = dao.validateLogin(username, password);
         } catch (Exception e) {   // DAO can throw SQLException/Exception
             e.printStackTrace();
@@ -43,7 +43,7 @@ public class LoginController {
             return;
         }
 
-        // if no account returned, login failed
+        // if no account is returned, the login failed
         if (account == null) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Login Failed");

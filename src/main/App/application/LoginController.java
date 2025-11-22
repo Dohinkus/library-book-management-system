@@ -1,3 +1,4 @@
+
 package application;
 
 import javafx.fxml.FXML;
@@ -10,63 +11,73 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+import lbms.dao.AppAccountDAO;
+import lbms.bo.AppAccount;
 
 public class LoginController {
 
-	@FXML
-	private TextField UsernameField;
-	
-	@FXML
-	private PasswordField PasswordField;
-	
-	@FXML
-	private void handleLogin() {
-		String username = UsernameField.getText();
-		String password = PasswordField.getText();
-		
-		//Temp till Data Base
-		//Admin Account : user= Admin, Pass = 1234, role = admin
-		// MemberAccount : user= member, pass = 1234, role = member
-		String role = null;
-		if(username.equals("Admin") && password.equals("1234")) {
-			role = "Admin";
-		}else if (username.equals("Member") && password.equals("1234")) {
-			role = "Member";
-		}
-		
-		if(role==null) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("LoginFailed");
-			alert.setHeaderText(null);
-			alert.setContentText("Invalid Username or Password");
-			alert.showAndWait();
-			return;
-		}
-		
-		try {
-			Stage stage = (Stage) UsernameField.getScene().getWindow();
-			
-			FXMLLoader loader;
-			
-			if("Admin".equals(role)) {
-				loader = new FXMLLoader(getClass().getResource("HomePageA.fxml"));
-				
-			}else {
-				loader = new FXMLLoader(getClass().getResource("HomePageM.fxml"));
-			}
-			
-			Parent root = loader.load();
-			
-			Scene newScene = new Scene(root);
-			stage.setScene(newScene);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Unable to Load next Scene");
-			alert.setContentText(e.getMessage());
-			alert.showAndWait();
-		}
-	}
+    @FXML
+    private TextField UsernameField;
+
+    @FXML
+    private PasswordField PasswordField;
+
+    @FXML
+    private void handleLogin() {
+        String username = UsernameField.getText();
+        String password = PasswordField.getText();
+
+        AppAccount account;
+
+        try {
+            AppAccountDAO dao = new AppAccountDAO();
+            // uses the backend to validate username + password
+            account = dao.validateLogin(username, password);
+        } catch (Exception e) {   // DAO can throw SQLException/Exception
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Login Error");
+            alert.setContentText("There was a problem talking to the database.");
+            alert.showAndWait();
+            return;
+        }
+
+        // if no account returned, login failed
+        if (account == null) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login Failed");
+            alert.setHeaderText(null);
+            alert.setContentText("Invalid username or password.");
+            alert.showAndWait();
+            return;
+        }
+
+        // gets the role
+        String role = account.getRole();
+
+        try {
+            Stage stage = (Stage) UsernameField.getScene().getWindow();
+            FXMLLoader loader;
+
+            // checks which user is logingin
+            if ("Employee".equalsIgnoreCase(role)) {
+                loader = new FXMLLoader(getClass().getResource("HomePageA.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("HomePageM.fxml"));
+            }
+
+            Parent root = loader.load();
+            Scene newScene = new Scene(root);
+            stage.setScene(newScene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Unable to load next scene");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
 }

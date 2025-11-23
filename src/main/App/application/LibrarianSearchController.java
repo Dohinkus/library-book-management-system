@@ -2,12 +2,17 @@ package application;
 
 	import javafx.collections.FXCollections;
 	import javafx.fxml.FXML;
-	import javafx.scene.control.TableColumn;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.TableColumn;
 	import javafx.scene.control.TableView;
 	import javafx.scene.control.TextField;
-	import javafx.scene.control.Alert;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 	import javafx.scene.control.Alert.AlertType;
 	import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.scene.control.Button;
 
 	// backend imports
 	import lbms.bo.Book;
@@ -45,6 +50,9 @@ package application;
 		
 		@FXML
 		private TableColumn<Book, Integer> pagesColumn;
+		
+		@FXML
+		private Button ReturnHome;
 		
 		@FXML
 		private void initialize() {
@@ -88,6 +96,26 @@ package application;
 			}
 		}
 		
+		// helper to swap scenes
+		private void switchScene(String fxmlName) {
+			Stage stage = (Stage) ToSearch.getScene().getWindow();
+			Parent root = FXMLLoader.load(getClass().getResource(fxmlName));
+			Scene scene = new scene(root);
+			stage.setScene(scene);
+		}catch(Exception e) {
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Unable to load screen");
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+		
+		@FXML
+		private void handleReturnHome() {
+			
+			switchScene("HomePageA");
+		}
 		
 	}
 

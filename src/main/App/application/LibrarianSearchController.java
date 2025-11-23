@@ -114,7 +114,7 @@ import javafx.scene.control.Button;
 		@FXML
 		private void handleReturnHome() {
 			
-			switchScene("HomePageA");
+			switchScene("HomePageA.fxml");
 		}
 		
 	}

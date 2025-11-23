@@ -129,10 +129,63 @@ public class CheckOutPageController {
 			
 			if(orderId > 0) {
 				showInfo("Checkout Successful. Order ID:" + orderId);
-				avaliablity
+				isAvaliableLabel.setText("");
+				
+				isbnField.clear();
+				
+				//refresh table for this user
+				loadCheckoutsForUser(username);
+	
+			}else {
+				showError("Checkout failed. Order ID not generated.");
 			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			showError("Error during checkout:" + e.getMessage());
+			
 		}
 		
+		private void showError(String msg) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText(null);
+			alert.setContentText(msg);
+			alert.showAndWait();
+		}
+		
+		
+		private void showInfo(String msg) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Checkout");
+			alert.setHeaderText(null);
+			alert.setContentText(msg);
+			alert.showAndWait();
+		}
+		
+		
+	}
+	
+	@FXML
+	private void initalize() {
+		
+		isbnColumn.setCellValueFactory(new PropertyValueFactory<> ("isbn"));
+		dateCheckOutColumn.setCellValueFactory(new PropertyValueFactory<> ("dateCheckOut"));
+		dateReturnedColumn.setCellValueFactory(new PropertyValueFactory <> ("returnDate"));
+	}
+	
+	private void LoadCheckoutsForUser(String username) {
+		
+		try {
+			CheckOutDAO dao = new CheckOutDAO();
+			
+			java.util.List<CheckOut> checkouts = dao.getActiveCheckouts(username);
+			
+			checkoutTable.setItems(FXColletions.observableArryList(checkouts));
+		} catch (Exception e) {
+			e.printStackTrace();
+			showError("Could not load checkouts:" + e.getMessage());
+		}
 	}
 	
 

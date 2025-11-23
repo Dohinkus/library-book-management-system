@@ -43,21 +43,21 @@ public class AdminHomeController {
 	@FXML
 	private void handleToSearch() {
 		
-		switchScene("LibrarianSearch");
+		switchScene("LibrarianSearch.fxml");
 	}
 	
 	
 	@FXML
 	private void handleToCheckout() {
 		
-		switchScene();
+		switchScene("CheckOutPage.fxml");
 	}
 	
 	
 	@FXML
 	private void handleToWaitlist() {
 		
-		switchScene();
+		switchScene("WaitList.fxml");
 	}
 	
 	@FXML

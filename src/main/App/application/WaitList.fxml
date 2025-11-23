@@ -10,13 +10,13 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #fffbd2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CheckOutPageController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #fffbd2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WaitListController">
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #7B5A3A;" BorderPane.alignment="CENTER">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d8b0" height="387.0" layoutX="7.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="587.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e8d8b0" height="387.0" layoutX="290.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="3.0" />
-            <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="216.0" text="Check Out Page">
+            <Label layoutX="14.0" layoutY="14.0" prefHeight="29.0" prefWidth="216.0" text="WaitList">
                <font>
                   <Font name="Times New Roman Bold" size="25.0" />
                </font>
@@ -25,19 +25,17 @@
             <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="please input memebr username" />
             <Label layoutX="14.0" layoutY="115.0" prefHeight="14.0" prefWidth="56.0" text="ISBN" />
             <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="please input book ISBN" />
-            <Button fx:id="CheckAvaliabilityButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleCheckAvaliability" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Check Avaliability" textFill="WHITE" />
-            <Label layoutX="13.0" layoutY="50.0" prefHeight="25.0" prefWidth="232.0" text="Book Check out" />
-            <Label fx:id="isAvaliableLabel" layoutX="47.0" layoutY="185.0" prefHeight="17.0" prefWidth="201.0" text="Ready" />
-            <Button fx:id="ConfrimCheckOutButton" layoutX="16.0" layoutY="228.0" mnemonicParsing="false" onAction="#handleConfrimCheckOut" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Confirm Check Out" textFill="WHITE" />
+            <Button fx:id="addButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleaddButton" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Add User to WaitList" textFill="WHITE" />
+            <Label layoutX="13.0" layoutY="50.0" prefHeight="25.0" prefWidth="232.0" text="Adding to wait List" />
             <Button fx:id="RetrunHomeButton" layoutX="503.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleReturnHome" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #830202;" text="Return Home" textFill="WHITE" />
-            <TableView fx:id="CheckoutTable" layoutX="293.0" layoutY="94.0" prefHeight="298.0" prefWidth="300.0" style="-fx-background-color: #FAF3DD;">
+            <TableView fx:id="waitlistTable" layoutX="293.0" layoutY="92.0" prefHeight="300.0" prefWidth="300.0" style="-fx-background-color: #FAF3DD;">
               <columns>
-                <TableColumn fx:id="isbnColumn" prefWidth="75.0" text="ISBN" />
-                <TableColumn fx:id="dateCheckOutColumn" prefWidth="108.0" text="Date CheckedOut" />
-                  <TableColumn fx:id="dateReturnedColumn" prefWidth="116.0" text="Date Returned" />
+                <TableColumn fx:id="UsernameColumn" prefWidth="112.0" text="Username" />
+                <TableColumn fx:id="isbnColumn" text="ISBN" />
+                  <TableColumn fx:id="datePlacedColumn" prefWidth="107.0" text="Date Placed" />
               </columns>
             </TableView>
-            <Label layoutX="300.0" layoutY="71.0" prefHeight="17.0" prefWidth="193.0" text="Check Outs Selected User Has">
+            <Label layoutX="300.0" layoutY="71.0" prefHeight="17.0" prefWidth="193.0" text="Waitlist">
                <font>
                   <Font name="Times New Roman Bold" size="13.0" />
                </font>

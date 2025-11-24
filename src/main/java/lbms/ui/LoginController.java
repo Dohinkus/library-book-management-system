@@ -4,25 +4,32 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import lbms.dao.AppAccountDAO;
 import lbms.bo.AppAccount;
+import lbms.dao.AppAccountDAO;
 
 public class LoginController {
 
+    // IMPORTANT: names MUST match fx:id EXACTLY in FicLibraryApp.fxml
     @FXML
-    private TextField usernameField;   // match fx:id in FicLibraryApp.fxml
+    private TextField UsernameField;
 
     @FXML
-    private PasswordField passwordField;
+    private PasswordField PasswordField;
 
     @FXML
     private void handleLogin() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        if (UsernameField == null || PasswordField == null) {
+            // This means FXML injection failed (bad fx:id or fx:controller)
+            showError("Internal error: username/password fields not initialized.");
+            return;
+        }
+
+        String username = UsernameField.getText();
+        String password = PasswordField.getText();
 
         if (username == null || username.isBlank() ||
             password == null || password.isBlank()) {
@@ -55,7 +62,8 @@ public class LoginController {
     }
 
     private void switchScene(String fxmlPath) throws Exception {
-        Stage stage = (Stage) usernameField.getScene().getWindow();
+        // Use any control that you know is injected; UsernameField is safe.
+        Stage stage = (Stage) UsernameField.getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
         Scene scene = new Scene(root);
         stage.setScene(scene);

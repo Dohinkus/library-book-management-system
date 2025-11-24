@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ae6007;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lbms.ui.MemberHomeController">
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ae6007" height="400.0" layoutX="261.0" stroke="BLACK" strokeType="INSIDE" width="49.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="383.0" layoutX="9.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="583.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="382.0" layoutX="276.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="17.0" />
+            <Label layoutX="20.0" layoutY="14.0" prefHeight="15.0" prefWidth="249.0" text="Fic Libary Home Page">
+               <font>
+                  <Font name="Times New Roman" size="25.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="43.0" prefHeight="17.0" prefWidth="231.0" text="Welcome Member">
+               <font>
+                  <Font name="Times New Roman" size="12.0" />
+               </font>
+            </Label>
+            <TableView fx:id="booktable" layoutX="9.0" layoutY="88.0" prefHeight="301.0" prefWidth="582.0" style="-fx-background-color: #e1dbaa;">
+              <columns>
+                <TableColumn fx:id="IsbnColumn" prefWidth="89.0" text="Isbn" />
+                  <TableColumn fx:id="publisherIDColumn" prefWidth="74.0" text="PublisherID" />
+                <TableColumn fx:id="titleColumn" prefWidth="132.0" text="Title" />
+                  <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
+                  <TableColumn fx:id="quantityColumn" prefWidth="75.0" text="Quantity" />
+                  <TableColumn fx:id="editionColumn" prefWidth="84.0" text="Edition" />
+                  <TableColumn fx:id="pagesColumn" prefWidth="52.0" text="Pages" />
+              </columns>
+            </TableView>
+            <Label layoutX="14.0" layoutY="60.0" prefHeight="28.0" prefWidth="77.0" text="Search Bar">
+               <font>
+                  <Font name="Times New Roman" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="searchField" layoutX="90.0" layoutY="62.0" onAction="#handleSearch" prefHeight="25.0" prefWidth="286.0" promptText="Search" />
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

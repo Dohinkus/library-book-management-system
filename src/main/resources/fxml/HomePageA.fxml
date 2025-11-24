@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ae6007;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lbms.ui.AdminHomeController">
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ae6007" height="400.0" layoutX="261.0" stroke="BLACK" strokeType="INSIDE" width="49.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="383.0" layoutX="9.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="583.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="382.0" layoutX="276.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="17.0" />
+            <Label layoutX="20.0" layoutY="14.0" prefHeight="15.0" prefWidth="249.0" text="Fic Libary Home Page">
+               <font>
+                  <Font name="Times New Roman Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="43.0" prefHeight="17.0" prefWidth="220.0" text="Welcom Librarian">
+               <font>
+                  <Font name="Times New Roman" size="16.0" />
+               </font>
+            </Label>
+            <Button fx:id="ToSearch" layoutX="20.0" layoutY="87.0" mnemonicParsing="false" onAction="#handleToSearch" style="-fx-background-color: #e1dbaa;" text="To Book Search">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="ToCheckout" layoutX="20.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleToCheckout" style="-fx-background-color: #e1dbaa;" text="To CheckOut">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="ToWaitList" layoutX="20.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleToWaitlist" style="-fx-background-color: #e1dbaa;" text="To Waitlist" />
+            <Button fx:id="ToReturn" layoutX="18.0" layoutY="234.0" mnemonicParsing="false" onAction="#handleToReturn" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #e1dbaa;" text="to Retun Book">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

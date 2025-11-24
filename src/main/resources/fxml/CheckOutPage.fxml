@@ -22,22 +22,22 @@
                </font>
             </Label>
             <Label layoutX="14.0" layoutY="79.0" prefHeight="17.0" prefWidth="89.0" text="Username" />
-            <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="please input memebr username" />
+            <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="Please enter member username" onAction="#handleLoadUserCheckouts" />
             <Label layoutX="14.0" layoutY="115.0" prefHeight="14.0" prefWidth="56.0" text="ISBN" />
-            <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="please input book ISBN" />
-            <Button fx:id="CheckAvaliabilityButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleCheckAvaliability" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Check Avaliability" textFill="WHITE" />
-            <Label layoutX="13.0" layoutY="50.0" prefHeight="25.0" prefWidth="232.0" text="Book Check out" />
+            <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="Please enter book ISBN" />
+            <Button fx:id="CheckAvaliabilityButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleCheckAvaliability" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Check Availability" textFill="WHITE" />
+            <Label layoutX="13.0" layoutY="50.0" prefHeight="25.0" prefWidth="232.0" text="Book Checkout" />
             <Label fx:id="isAvaliableLabel" layoutX="47.0" layoutY="185.0" prefHeight="17.0" prefWidth="201.0" text="Ready" />
             <Button fx:id="ConfrimCheckOutButton" layoutX="16.0" layoutY="228.0" mnemonicParsing="false" onAction="#handleConfrimCheckOut" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Confirm Check Out" textFill="WHITE" />
             <Button fx:id="RetrunHomeButton" layoutX="503.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleReturnHome" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #830202;" text="Return Home" textFill="WHITE" />
             <TableView fx:id="CheckoutTable" layoutX="293.0" layoutY="94.0" prefHeight="298.0" prefWidth="300.0" style="-fx-background-color: #FAF3DD;">
               <columns>
+                <TableColumn fx:id="UsernameColumn" text="Username" prefWidth="116.0" />
                 <TableColumn fx:id="isbnColumn" prefWidth="75.0" text="ISBN" />
-                <TableColumn fx:id="dateCheckOutColumn" prefWidth="108.0" text="Date CheckedOut" />
-                  <TableColumn fx:id="dateReturnedColumn" prefWidth="116.0" text="Date Returned" />
+                <TableColumn fx:id="dateCheckOutColumn" prefWidth="108.0" text="Date Checked Out" />
               </columns>
             </TableView>
-            <Label layoutX="300.0" layoutY="71.0" prefHeight="17.0" prefWidth="193.0" text="Check Outs Selected User Has">
+            <Label layoutX="300.0" layoutY="71.0" prefHeight="17.0" prefWidth="193.0" text="Checkouts for Selected User">
                <font>
                   <Font name="Times New Roman Bold" size="13.0" />
                </font>

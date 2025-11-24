@@ -85,4 +85,29 @@ public class WaitListDAO {
             return null;
         }
     }
+
+    public List<WaitListEntry> getAll() throws SQLException {
+    String sql = """
+        SELECT Username, ISBN, DatePlaced
+        FROM WaitList
+        ORDER BY DatePlaced
+        """;
+
+    List<WaitListEntry> list = new ArrayList<>();
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            list.add(new WaitListEntry(
+                    rs.getString("Username"),
+                    rs.getString("ISBN"),
+                    rs.getTimestamp("DatePlaced").toString()
+                ));
+            }
+        }
+        return list;
+    }
+
 }

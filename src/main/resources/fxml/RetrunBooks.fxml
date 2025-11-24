@@ -22,9 +22,9 @@
                </font>
             </Label>
             <Label layoutX="14.0" layoutY="79.0" prefHeight="17.0" prefWidth="89.0" text="Username" />
-            <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="please input memebr username" />
+            <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="Please enter member username" onAction="#handleLoadReturns" />
             <Label layoutX="14.0" layoutY="115.0" prefHeight="14.0" prefWidth="56.0" text="ISBN" />
-            <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="please input book ISBN" />
+            <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="Please enter book ISBN" />
             <Button fx:id="returnButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleReturn" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Return book" textFill="WHITE" />
             <Label layoutX="13.0" layoutY="50.0" prefHeight="25.0" prefWidth="232.0" text="Book to Return" />
             <Button fx:id="RetrunHomeButton" layoutX="503.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleReturnHome" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #830202;" text="Return Home" textFill="WHITE" />

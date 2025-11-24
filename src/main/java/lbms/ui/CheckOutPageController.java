@@ -14,7 +14,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 import lbms.bo.CheckOut;
 import lbms.dao.BookDAO;
 import lbms.dao.CheckOutDAO;
@@ -38,16 +37,18 @@ public class CheckOutPageController {
     @FXML
     private Label isAvaliableLabel;
 
-    // fx:id in FXML is ConfrimCheckOutButton (typo kept to match FXML)
     @FXML
     private Button ConfrimCheckOutButton;
 
-    // fx:id in FXML is RetrunHomeButton
     @FXML
     private Button RetrunHomeButton;
 
     @FXML
     private TableView<CheckOut> CheckoutTable;
+
+    // NEW: show username as first column
+    @FXML
+    private TableColumn<CheckOut, String> UsernameColumn;
 
     @FXML
     private TableColumn<CheckOut, String> isbnColumn;
@@ -56,19 +57,19 @@ public class CheckOutPageController {
     private TableColumn<CheckOut, String> dateCheckOutColumn;
 
     @FXML
-    private TableColumn<CheckOut, String> dateReturnedColumn;
-
-    @FXML
     private void initialize() {
+        // Bind columns to CheckOut BO fields
+        UsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         dateCheckOutColumn.setCellValueFactory(new PropertyValueFactory<>("dateCheckedOut"));
-        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
-        // start with empty table
         CheckoutTable.setItems(FXCollections.observableArrayList());
+
+        // Show all active checkouts by default
+        loadAllActiveCheckouts();
     }
 
-    // Checking how many copies are free
+    // Called when you press "Check Availability"
     @FXML
     private void handleCheckAvaliability() {
         String isbn = isbnField.getText();
@@ -93,7 +94,7 @@ public class CheckOutPageController {
         }
     }
 
-    // Perform the checkout (or add to waitlist if none available)
+    // Called when you press "Confirm Checkout"
     @FXML
     private void handleConfrimCheckOut() {
         String username = usernameField.getText();
@@ -111,7 +112,7 @@ public class CheckOutPageController {
             if (available <= 0) {
                 // add to waitlist instead
                 WaitListDAO waitListDAO = new WaitListDAO();
-                boolean added = waitListDAO.addToWaitList(username, isbn);
+                boolean added = waitListDAO.addToWaitList(username.trim(), isbn.trim());
                 if (added) {
                     isAvaliableLabel.setText("No copies available. User added to waitlist.");
                     showInfo("No copies available. User added to waitlist.");
@@ -123,8 +124,8 @@ public class CheckOutPageController {
 
             // build the checkout BO
             CheckOut co = new CheckOut();
-            co.setUsername(username);
-            co.setIsbn(isbn);
+            co.setUsername(username.trim());
+            co.setIsbn(isbn.trim());
             co.setDateCheckedOut(LocalDate.now().toString());
 
             CheckOutDAO dao = new CheckOutDAO();
@@ -135,8 +136,8 @@ public class CheckOutPageController {
                 isAvaliableLabel.setText("");
                 isbnField.clear();
 
-                // refresh table for this user
-                loadCheckoutsForUser(username);
+                // refresh active checkouts for this user
+                loadCheckoutsForUser(username.trim());
             } else {
                 showError("Checkout failed. Order ID not generated.");
             }
@@ -147,9 +148,32 @@ public class CheckOutPageController {
         }
     }
 
+    // View active checkouts without doing a checkout
+    @FXML
+    private void handleLoadUserCheckouts() {
+        String username = usernameField.getText();
+        if (username == null || username.isBlank()) {
+            // If no username, show all active checkouts
+            loadAllActiveCheckouts();
+        } else {
+            loadCheckoutsForUser(username.trim());
+        }
+    }
+
     @FXML
     private void handleReturnHome() {
         switchScene("HomePageA.fxml");
+    }
+
+    private void loadAllActiveCheckouts() {
+        try {
+            CheckOutDAO dao = new CheckOutDAO();
+            List<CheckOut> checkouts = dao.getAllActiveCheckouts();
+            CheckoutTable.setItems(FXCollections.observableArrayList(checkouts));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not load active checkouts: " + e.getMessage());
+        }
     }
 
     private void loadCheckoutsForUser(String username) {
@@ -159,7 +183,7 @@ public class CheckOutPageController {
             CheckoutTable.setItems(FXCollections.observableArrayList(checkouts));
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Could not load checkouts: " + e.getMessage());
+            showError("Could not load checkouts for user: " + e.getMessage());
         }
     }
 

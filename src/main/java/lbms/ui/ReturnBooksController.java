@@ -45,53 +45,62 @@ public class ReturnBooksController {
     private void initialize() {
         UsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
-        // For a simple demo, show the checkout date in this column (header text
-        // still says "Date Returned", but that's okay for now).
-        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCheckedOut"));
+        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
         returnedBooksTable.setItems(FXCollections.observableArrayList());
+
+        // NEW: show all past returns by default
+        loadAllReturned();
     }
 
     @FXML
     private void handleReturn() {
-        String username = usernameField.getText();
-        String isbn = isbnField.getText();
+        String username = usernameField.getText() == null ? "" : usernameField.getText().trim();
+        String isbn = isbnField.getText() == null ? "" : isbnField.getText().trim();
 
-        if (username == null || username.isBlank() || isbn == null || isbn.isBlank()) {
+        if (username.isEmpty() || isbn.isEmpty()) {
             showError("Please enter both username and ISBN.");
             return;
         }
 
         try {
             CheckOutDAO dao = new CheckOutDAO();
-            // Get all active checkouts for this user
-            List<CheckOut> active = dao.getActiveCheckouts(username);
 
-            // Find the first checkout for the given ISBN
+            // find an active checkout for this user + ISBN
+            List<CheckOut> active = dao.getActiveCheckouts(username);
             CheckOut toReturn = active.stream()
                     .filter(co -> isbn.equals(co.getIsbn()))
                     .findFirst()
                     .orElse(null);
 
             if (toReturn == null) {
-                showError("No active checkout found for that user and ISBN.");
+                showError("No active checkout found for this user and ISBN.");
+                // Still show current returns so the table isn't blank
+                loadReturnedForUserOrAll(username);
                 return;
             }
 
             boolean ok = dao.returnBook(toReturn.getOrderId(), LocalDate.now().toString());
-
             if (ok) {
                 showInfo("Book returned successfully.");
-                // Reload active checkouts (table shows remaining active loans)
-                loadActiveCheckouts(username);
+                // After returning, show returns for that user (or all if username cleared)
+                loadReturnedForUserOrAll(username);
                 isbnField.clear();
             } else {
                 showError("Return operation failed.");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             showError("Error while returning book: " + e.getMessage());
         }
+    }
+
+    // NEW: view past returns without returning a book
+    @FXML
+    private void handleLoadReturns() {
+        String username = usernameField.getText() == null ? "" : usernameField.getText().trim();
+        loadReturnedForUserOrAll(username);
     }
 
     @FXML
@@ -99,14 +108,30 @@ public class ReturnBooksController {
         switchScene("HomePageA.fxml");
     }
 
-    private void loadActiveCheckouts(String username) {
+    private void loadAllReturned() {
         try {
             CheckOutDAO dao = new CheckOutDAO();
-            List<CheckOut> active = dao.getActiveCheckouts(username);
-            returnedBooksTable.setItems(FXCollections.observableArrayList(active));
+            List<CheckOut> list = dao.getAllReturned();
+            returnedBooksTable.setItems(FXCollections.observableArrayList(list));
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Could not load active checkouts: " + e.getMessage());
+            showError("Could not load returned books: " + e.getMessage());
+        }
+    }
+
+    private void loadReturnedForUserOrAll(String username) {
+        try {
+            CheckOutDAO dao = new CheckOutDAO();
+            List<CheckOut> list;
+            if (username == null || username.isBlank()) {
+                list = dao.getAllReturned();
+            } else {
+                list = dao.getReturnedForUser(username);
+            }
+            returnedBooksTable.setItems(FXCollections.observableArrayList(list));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not load returned books: " + e.getMessage());
         }
     }
 

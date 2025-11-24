@@ -23,6 +23,7 @@
             </Label>
             <Label layoutX="14.0" layoutY="79.0" prefHeight="17.0" prefWidth="89.0" text="Username" />
             <TextField fx:id="usernameField" layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="184.0" promptText="please input memebr username" />
+            <TextField fx:id="usernameField" onAction="#handleLoadUserCheckouts"/>
             <Label layoutX="14.0" layoutY="115.0" prefHeight="14.0" prefWidth="56.0" text="ISBN" />
             <TextField fx:id="isbnField" layoutX="81.0" layoutY="111.0" prefHeight="25.0" prefWidth="184.0" promptText="please input book ISBN" />
             <Button fx:id="CheckAvaliabilityButton" layoutX="16.0" layoutY="147.0" mnemonicParsing="false" onAction="#handleCheckAvaliability" prefHeight="25.0" prefWidth="257.0" style="-fx-background-color: #830202;" text="Check Avaliability" textFill="WHITE" />

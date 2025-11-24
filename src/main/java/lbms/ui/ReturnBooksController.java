@@ -8,129 +8,133 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
-import java.time.LocalDate;
-import java.util.List;
-
 import lbms.bo.CheckOut;
 import lbms.dao.CheckOutDAO;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 public class ReturnBooksController {
 
-	  @FXML
-	    private TextField usernameField;
+    @FXML
+    private TextField usernameField;
 
-	    @FXML
-	    private TextField isbnField;
+    @FXML
+    private TextField isbnField;
 
-	    @FXML
-	    private Button returnButton;
+    @FXML
+    private Button returnButton;
 
-	    @FXML
-	    private Button ReturnHomeButton;
+    @FXML
+    private Button RetrunHomeButton;
 
-	    @FXML
-	    private TableView<CheckOut> returnedTable;
+    @FXML
+    private TableView<CheckOut> returnedBooksTable;
 
-	    @FXML
-	    private TableColumn<CheckOut, String> usernameColumn;
+    @FXML
+    private TableColumn<CheckOut, String> UsernameColumn;
 
-	    @FXML
-	    private TableColumn<CheckOut, String> isbnColumn;
+    @FXML
+    private TableColumn<CheckOut, String> isbnColumn;
 
-	    @FXML
-	    private TableColumn<CheckOut, String> dateReturnedColumn;
-	  
-	    
-	   //runs after FXML loads
-	    @FXML
-	    private void initialize() {
-	       
-	        usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
-	        isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
-	        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
+    @FXML
+    private TableColumn<CheckOut, String> dateReturnedColumn;
 
-	        returnedTable.setItems(FXCollections.observableArrayList());
-	    }
-	    
-	    private void handleReturnBook() {
-	        String username = usernameField.getText();
-	        String isbn = isbnField.getText();
+    @FXML
+    private void initialize() {
+        UsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        // For a simple demo, show the checkout date in this column (header text
+        // still says "Date Returned", but that's okay for now).
+        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCheckedOut"));
 
-	        if (username == null || username.isBlank() ||
-	            isbn == null || isbn.isBlank()) {
-	            showError("Please enter both username and ISBN.");
-	            return;
-	        }
+        returnedBooksTable.setItems(FXCollections.observableArrayList());
+    }
 
-	        try {
-	            CheckOutDAO dao = new CheckOutDAO();
+    @FXML
+    private void handleReturn() {
+        String username = usernameField.getText();
+        String isbn = isbnField.getText();
 
-	            // all active (ReturnDate IS NULL) for this user
-	            List<CheckOut> active = dao.getActiveCheckouts(username);
+        if (username == null || username.isBlank() || isbn == null || isbn.isBlank()) {
+            showError("Please enter both username and ISBN.");
+            return;
+        }
 
-	            CheckOut toReturn = null;
-	            for (CheckOut co : active) {
-	                if (isbn.equals(co.getIsbn())) {
-	                    toReturn = co;
-	                    break;
-	                }
-	            }
+        try {
+            CheckOutDAO dao = new CheckOutDAO();
+            // Get all active checkouts for this user
+            List<CheckOut> active = dao.getActiveCheckouts(username);
 
-	            if (toReturn == null) {
-	                showError("No active checkout found for that username and ISBN.");
-	                return;
-	            }
+            // Find the first checkout for the given ISBN
+            CheckOut toReturn = active.stream()
+                    .filter(co -> isbn.equals(co.getIsbn()))
+                    .findFirst()
+                    .orElse(null);
 
-	            String today = LocalDate.now().toString();
+            if (toReturn == null) {
+                showError("No active checkout found for that user and ISBN.");
+                return;
+            }
 
-	            boolean ok = dao.returnBook(toReturn.getOrderId(), today);
+            boolean ok = dao.returnBook(toReturn.getOrderId(), LocalDate.now().toString());
 
-	            if (ok) {
-	                // update BO so the table shows the date
-	                toReturn.setReturnDate(today);
+            if (ok) {
+                showInfo("Book returned successfully.");
+                // Reload active checkouts (table shows remaining active loans)
+                loadActiveCheckouts(username);
+                isbnField.clear();
+            } else {
+                showError("Return operation failed.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Error while returning book: " + e.getMessage());
+        }
+    }
 
-	                // add this returned item to the table (running log for this session)
-	                returnedTable.getItems().add(toReturn);
+    @FXML
+    private void handleReturnHome() {
+        switchScene("HomePageA.fxml");
+    }
 
-	                showInfo("Book returned successfully.");
-	                isbnField.clear();
-	            } else {
-	                showError("Return failed.");
-	            }
+    private void loadActiveCheckouts(String username) {
+        try {
+            CheckOutDAO dao = new CheckOutDAO();
+            List<CheckOut> active = dao.getActiveCheckouts(username);
+            returnedBooksTable.setItems(FXCollections.observableArrayList(active));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not load active checkouts: " + e.getMessage());
+        }
+    }
 
-	        } catch (Exception e) { 
-	            e.printStackTrace();
-	            showError("Error returning book: " + e.getMessage());
-	        }
-	    }
+    private void switchScene(String fxmlName) {
+        try {
+            Stage stage = (Stage) RetrunHomeButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/" + fxmlName));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Unable to load screen: " + e.getMessage());
+        }
+    }
 
-	    @FXML
-	    private void handleReturnHome() {
-	        try {
-	            Stage stage = (Stage) ReturnHomeButton.getScene().getWindow();
-	            Parent root = FXMLLoader.load(getClass().getResource("HomePageA.fxml"));
-	            stage.setScene(new Scene(root));
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            showError("Could not go back home: " + e.getMessage());
-	        }
-	    }
+    private void showError(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle("Error");
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
+    }
 
-	    private void showError(String msg) {
-	        Alert a = new Alert(Alert.AlertType.ERROR);
-	        a.setTitle("Error");
-	        a.setHeaderText(null);
-	        a.setContentText(msg);
-	        a.showAndWait();
-	    }
-
-	    private void showInfo(String msg) {
-	        Alert a = new Alert(Alert.AlertType.INFORMATION);
-	        a.setTitle("Return Book");
-	        a.setHeaderText(null);
-	        a.setContentText(msg);
-	        a.showAndWait();
-	    }
+    private void showInfo(String msg) {
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle("Return Book");
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
+    }
 }

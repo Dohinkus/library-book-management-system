@@ -1,5 +1,5 @@
 
-package application;
+package lbms.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package application;
+package lbms.ui;
 
 	import javafx.collections.FXCollections;
 	import javafx.fxml.FXML;

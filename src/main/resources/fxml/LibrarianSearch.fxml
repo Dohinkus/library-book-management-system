@@ -17,7 +17,7 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ae6007" height="400.0" layoutX="261.0" stroke="BLACK" strokeType="INSIDE" width="49.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="383.0" layoutX="9.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="583.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fffbd2" height="382.0" layoutX="276.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="17.0" />
-            <Label layoutX="20.0" layoutY="14.0" prefHeight="15.0" prefWidth="249.0" text="Fic Librarian Search Page">
+            <Label layoutX="20.0" layoutY="14.0" prefHeight="15.0" prefWidth="249.0" text="Fic Librarian Search">
                <font>
                   <Font name="Times New Roman" size="25.0" />
                </font>

@@ -1,4 +1,4 @@
-package lbms.ui;
+package lbms;
 	
 import javafx.application.Application;
 import javafx.stage.Stage;

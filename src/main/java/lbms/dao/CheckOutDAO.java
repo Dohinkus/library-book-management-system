@@ -87,4 +87,32 @@ public class CheckOutDAO {
         }
         return list;
     }
+
+    public List<CheckOut> getAllActiveCheckouts() throws SQLException {
+    String sql = """
+        SELECT * FROM CheckOut
+        WHERE ReturnDate IS NULL
+        ORDER BY DateCheckedOut
+        """;
+
+    List<CheckOut> list = new ArrayList<>();
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            list.add(new CheckOut(
+                    rs.getInt("OrderId"),
+                    rs.getString("Username"),
+                    rs.getString("ISBN"),
+                    rs.getString("DateCheckedOut"),
+                    rs.getString("ReturnDate")
+                ));
+            }
+        }
+
+    return list;
+    }
+
 }

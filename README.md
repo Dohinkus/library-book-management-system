@@ -69,13 +69,23 @@ Clone the repository:
 git clone https://github.com/Dohinkus/library-book-management-system.git
 cd library-book-management-system
 
-TODO Fill this out
+Download JDK 17
+
+Download and setup Maven in your Path for environment variables
 
 ---
 
 ## Running the Application
 
-TODO Fill this out
+In the cloned directory, run:
+
+mvn clean compile
+
+If successful, then run:
+
+mvn exec:java
+
+This starts the program.
 
 ---
 

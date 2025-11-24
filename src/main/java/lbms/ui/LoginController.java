@@ -1,4 +1,3 @@
-
 package lbms.ui;
 
 import javafx.fxml.FXML;
@@ -8,76 +7,65 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-
 import lbms.dao.AppAccountDAO;
 import lbms.bo.AppAccount;
 
 public class LoginController {
 
     @FXML
-    private TextField UsernameField;
+    private TextField usernameField;   // match fx:id in FicLibraryApp.fxml
 
     @FXML
-    private PasswordField PasswordField;
+    private PasswordField passwordField;
 
     @FXML
     private void handleLogin() {
-        String username = UsernameField.getText();
-        String password = PasswordField.getText();
+        String username = usernameField.getText();
+        String password = passwordField.getText();
 
-        AppAccount account;
+        if (username == null || username.isBlank() ||
+            password == null || password.isBlank()) {
+            showError("Please enter both username and password.");
+            return;
+        }
 
         try {
             AppAccountDAO dao = new AppAccountDAO();
-            // uses the backend to validate username and password
-            account = dao.validateLogin(username, password);
-        } catch (Exception e) {   // DAO can throw SQLException/Exception
-            e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Login Error");
-            alert.setContentText("There was a problem talking to the database.");
-            alert.showAndWait();
-            return;
-        }
+            AppAccount acc = dao.validateLogin(username, password);
 
-        // if no account is returned, the login failed
-        if (account == null) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Login Failed");
-            alert.setHeaderText(null);
-            alert.setContentText("Invalid username or password.");
-            alert.showAndWait();
-            return;
-        }
-
-        // gets the role
-        String role = account.getRole();
-
-        try {
-            Stage stage = (Stage) UsernameField.getScene().getWindow();
-            FXMLLoader loader;
-
-            // checks which user is logingin
-            if ("Employee".equalsIgnoreCase(role)) {
-                loader = new FXMLLoader(getClass().getResource("HomePageA.fxml"));
-            } else {
-                loader = new FXMLLoader(getClass().getResource("HomePageM.fxml"));
+            if (acc == null) {
+                showError("Invalid username or password.");
+                return;
             }
 
-            Parent root = loader.load();
-            Scene newScene = new Scene(root);
-            stage.setScene(newScene);
+            String role = acc.getRole();
+            if ("LIBRARIAN".equalsIgnoreCase(role)) {
+                switchScene("/fxml/HomePageA.fxml");
+            } else if ("MEMBER".equalsIgnoreCase(role)) {
+                switchScene("/fxml/HomePageM.fxml");
+            } else {
+                showError("Unknown role: " + role);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Unable to load next scene");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            showError("Login error: " + e.getMessage());
         }
+    }
+
+    private void switchScene(String fxmlPath) throws Exception {
+        Stage stage = (Stage) usernameField.getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    private void showError(String msg) {
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle("Login Error");
+        a.setHeaderText(null);
+        a.setContentText(msg);
+        a.showAndWait();
     }
 }

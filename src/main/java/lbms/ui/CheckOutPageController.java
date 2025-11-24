@@ -46,6 +46,10 @@ public class CheckOutPageController {
     @FXML
     private TableView<CheckOut> CheckoutTable;
 
+    // NEW: show username as first column
+    @FXML
+    private TableColumn<CheckOut, String> UsernameColumn;
+
     @FXML
     private TableColumn<CheckOut, String> isbnColumn;
 
@@ -53,17 +57,15 @@ public class CheckOutPageController {
     private TableColumn<CheckOut, String> dateCheckOutColumn;
 
     @FXML
-    private TableColumn<CheckOut, String> dateReturnedColumn;
-
-    @FXML
     private void initialize() {
+        // Bind columns to CheckOut BO fields
+        UsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         dateCheckOutColumn.setCellValueFactory(new PropertyValueFactory<>("dateCheckedOut"));
-        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
         CheckoutTable.setItems(FXCollections.observableArrayList());
 
-        // NEW: show all active checkouts by default
+        // Show all active checkouts by default
         loadAllActiveCheckouts();
     }
 
@@ -134,7 +136,7 @@ public class CheckOutPageController {
                 isAvaliableLabel.setText("");
                 isbnField.clear();
 
-                // NEW: refresh active checkouts for this user
+                // refresh active checkouts for this user
                 loadCheckoutsForUser(username.trim());
             } else {
                 showError("Checkout failed. Order ID not generated.");
@@ -146,8 +148,7 @@ public class CheckOutPageController {
         }
     }
 
-    // NEW: view active checkouts without doing a checkout
-    // You can wire this to a button OR to usernameField's onAction
+    // View active checkouts without doing a checkout
     @FXML
     private void handleLoadUserCheckouts() {
         String username = usernameField.getText();

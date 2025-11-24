@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Main {
+public class BackendTest {
 
     public static void main(String[] args) {
         System.out.println("LBMS Backend Test Starting...");

@@ -24,17 +24,20 @@
                   <Font name="Times New Roman" size="16.0" />
                </font>
             </Label>
-            <Button fx:id="ToSearch" layoutX="20.0" layoutY="87.0" mnemonicParsing="false" onAction="#handleToSearch" style="-fx-background-color: #e1dbaa;" text="To Book Search">
+            <Button fx:id="ToSearch" layoutX="20.0" layoutY="87.0" mnemonicParsing="false" onAction="#handleToSearch" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Book Search">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="ToCheckout" layoutX="20.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleToCheckout" style="-fx-background-color: #e1dbaa;" text="To Checkout">
+            <Button fx:id="ToCheckout" layoutX="20.0" layoutY="141.0" mnemonicParsing="false" onAction="#handleToCheckout" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Checkout">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="ToWaitList" layoutX="20.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleToWaitlist" style="-fx-background-color: #e1dbaa;" text="To Waitlist" />
+            <Button fx:id="ToWaitList" layoutX="20.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleToWaitlist" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Waitlist" />
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
             <Button fx:id="ToReturn" layoutX="18.0" layoutY="234.0" mnemonicParsing="false" onAction="#handleToReturn" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Return Book">
                <font>
                   <Font name="System Bold" size="12.0" />

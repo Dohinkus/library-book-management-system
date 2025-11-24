@@ -8,19 +8,23 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import lbms.bo.WaitListEntry;
+import lbms.bo.CheckOut;
+import lbms.dao.BookDAO;
+import lbms.dao.CheckOutDAO;
 import lbms.dao.WaitListDAO;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
-public class WaitListController {
+public class CheckOutPageController {
 
     @FXML
     private TextField usernameField;
@@ -29,37 +33,69 @@ public class WaitListController {
     private TextField isbnField;
 
     @FXML
-    private Button addButton;
+    private Button CheckAvaliabilityButton;
 
-    // fx:id in WaitList.fxml is RetrunHomeButton
+    @FXML
+    private Label isAvaliableLabel;
+
+    // fx:id in FXML is ConfrimCheckOutButton (typo kept to match FXML)
+    @FXML
+    private Button ConfrimCheckOutButton;
+
+    // fx:id in FXML is RetrunHomeButton
     @FXML
     private Button RetrunHomeButton;
 
     @FXML
-    private TableView<WaitListEntry> waitlistTable;
-
-    // fx:id in FXML is UsernameColumn
-    @FXML
-    private TableColumn<WaitListEntry, String> UsernameColumn;
+    private TableView<CheckOut> CheckoutTable;
 
     @FXML
-    private TableColumn<WaitListEntry, String> isbnColumn;
+    private TableColumn<CheckOut, String> isbnColumn;
 
     @FXML
-    private TableColumn<WaitListEntry, String> datePlacedColumn;
+    private TableColumn<CheckOut, String> dateCheckOutColumn;
+
+    @FXML
+    private TableColumn<CheckOut, String> dateReturnedColumn;
 
     @FXML
     private void initialize() {
-        UsernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
-        datePlacedColumn.setCellValueFactory(new PropertyValueFactory<>("datePlaced"));
+        dateCheckOutColumn.setCellValueFactory(new PropertyValueFactory<>("dateCheckedOut"));
+        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
-        // starts with an empty list (no ISBN selected yet)
-        waitlistTable.setItems(FXCollections.observableArrayList());
+        // start with empty table
+        CheckoutTable.setItems(FXCollections.observableArrayList());
     }
 
+    // Checking how many copies are free
     @FXML
-    private void handleaddButton() {
+    private void handleCheckAvaliability() {
+        String isbn = isbnField.getText();
+
+        if (isbn == null || isbn.isBlank()) {
+            showError("Please enter an ISBN");
+            return;
+        }
+
+        try {
+            BookDAO bookDAO = new BookDAO();
+            int available = bookDAO.getAvailableCopies(isbn);
+
+            if (available > 0) {
+                isAvaliableLabel.setText("Available copies: " + available);
+            } else {
+                isAvaliableLabel.setText("No copies available");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Error while checking availability: " + e.getMessage());
+        }
+    }
+
+    // Perform the checkout (or add to waitlist if none available)
+    @FXML
+    private void handleConfrimCheckOut() {
         String username = usernameField.getText();
         String isbn = isbnField.getText();
 
@@ -69,20 +105,45 @@ public class WaitListController {
         }
 
         try {
-            WaitListDAO dao = new WaitListDAO();
-            boolean added = dao.addToWaitList(username, isbn);
+            BookDAO bookDAO = new BookDAO();
+            int available = bookDAO.getAvailableCopies(isbn);
 
-            if (added) {
-                showInfo("User added to waitlist");
-                // refresh table for this ISBN
-                loadWaitlistForIsbn(isbn);
-                isbnField.clear();
-            } else {
-                showError("Error adding to waitlist");
+            if (available <= 0) {
+                // add to waitlist instead
+                WaitListDAO waitListDAO = new WaitListDAO();
+                boolean added = waitListDAO.addToWaitList(username, isbn);
+                if (added) {
+                    isAvaliableLabel.setText("No copies available. User added to waitlist.");
+                    showInfo("No copies available. User added to waitlist.");
+                } else {
+                    showError("Couldn't add to waitlist");
+                }
+                return;
             }
+
+            // build the checkout BO
+            CheckOut co = new CheckOut();
+            co.setUsername(username);
+            co.setIsbn(isbn);
+            co.setDateCheckedOut(LocalDate.now().toString());
+
+            CheckOutDAO dao = new CheckOutDAO();
+            int orderId = dao.insert(co);
+
+            if (orderId > 0) {
+                showInfo("Checkout successful. Order ID: " + orderId);
+                isAvaliableLabel.setText("");
+                isbnField.clear();
+
+                // refresh table for this user
+                loadCheckoutsForUser(username);
+            } else {
+                showError("Checkout failed. Order ID not generated.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Could not update waitlist: " + e.getMessage());
+            showError("Error during checkout: " + e.getMessage());
         }
     }
 
@@ -91,14 +152,14 @@ public class WaitListController {
         switchScene("HomePageA.fxml");
     }
 
-    private void loadWaitlistForIsbn(String isbn) {
+    private void loadCheckoutsForUser(String username) {
         try {
-            WaitListDAO dao = new WaitListDAO();
-            List<WaitListEntry> entries = dao.getWaitListForBook(isbn);
-            waitlistTable.setItems(FXCollections.observableArrayList(entries));
+            CheckOutDAO dao = new CheckOutDAO();
+            List<CheckOut> checkouts = dao.getActiveCheckouts(username);
+            CheckoutTable.setItems(FXCollections.observableArrayList(checkouts));
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Could not load waitlist: " + e.getMessage());
+            showError("Could not load checkouts: " + e.getMessage());
         }
     }
 
@@ -110,23 +171,23 @@ public class WaitListController {
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
-            showError("Could not switch screen: " + e.getMessage());
+            showError("Unable to load screen: " + e.getMessage());
         }
     }
 
     private void showError(String msg) {
-        Alert a = new Alert(AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 
     private void showInfo(String msg) {
-        Alert a = new Alert(AlertType.INFORMATION);
-        a.setTitle("Waitlist");
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Checkout");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
     }
 }

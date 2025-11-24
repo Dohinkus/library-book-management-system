@@ -35,10 +35,6 @@
                </font>
             </Button>
             <Button fx:id="ToWaitList" layoutX="20.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleToWaitlist" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Waitlist" />
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
             <Button fx:id="ToReturn" layoutX="18.0" layoutY="234.0" mnemonicParsing="false" onAction="#handleToReturn" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: #e1dbaa;" text="To Return Book">
                <font>
                   <Font name="System Bold" size="12.0" />

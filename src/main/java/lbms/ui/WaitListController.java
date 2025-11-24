@@ -5,19 +5,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
+import lbms.bo.AppAccount;
+import lbms.bo.Book;
 import lbms.bo.WaitListEntry;
+import lbms.dao.AppAccountDAO;
+import lbms.dao.BookDAO;
 import lbms.dao.WaitListDAO;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class WaitListController {
@@ -31,14 +30,12 @@ public class WaitListController {
     @FXML
     private Button addButton;
 
-    // fx:id in WaitList.fxml is RetrunHomeButton
     @FXML
     private Button RetrunHomeButton;
 
     @FXML
     private TableView<WaitListEntry> waitlistTable;
 
-    // fx:id in FXML is UsernameColumn
     @FXML
     private TableColumn<WaitListEntry, String> UsernameColumn;
 
@@ -54,31 +51,64 @@ public class WaitListController {
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         datePlacedColumn.setCellValueFactory(new PropertyValueFactory<>("datePlaced"));
 
-        // starts with an empty list (no ISBN selected yet)
         waitlistTable.setItems(FXCollections.observableArrayList());
+
+        // NEW: load all waitlist entries on page open
+        loadAllWaitlist();
     }
 
     @FXML
     private void handleaddButton() {
-        String username = usernameField.getText();
-        String isbn = isbnField.getText();
+        String username = usernameField.getText() == null ? "" : usernameField.getText().trim();
+        String isbn = isbnField.getText() == null ? "" : isbnField.getText().trim();
 
-        if (username == null || username.isBlank() || isbn == null || isbn.isBlank()) {
-            showError("Please enter both username and ISBN");
+        if (username.isEmpty() || isbn.isEmpty()) {
+            showError("Please enter both username and ISBN.");
             return;
         }
 
         try {
+            // verify user exists
+            AppAccountDAO accDao = new AppAccountDAO();
+            AppAccount acc = accDao.getByUsername(username);
+            if (acc == null) {
+                showError("No such user in the system: " + username);
+                return;
+            }
+
+            // verify book exists
+            BookDAO bookDao = new BookDAO();
+            Book book = bookDao.getByISBN(isbn);
+            if (book == null) {
+                showError("No such book with ISBN: " + isbn);
+                return;
+            }
+
             WaitListDAO dao = new WaitListDAO();
             boolean added = dao.addToWaitList(username, isbn);
 
             if (added) {
-                showInfo("User added to waitlist");
-                // refresh table for this ISBN
-                loadWaitlistForIsbn(isbn);
+                showInfo("User added to waitlist.");
+                // refresh list – show entries for this ISBN if provided, else all
+                if (!isbn.isEmpty()) {
+                    loadWaitlistForIsbn(isbn);
+                } else {
+                    loadAllWaitlist();
+                }
                 isbnField.clear();
             } else {
-                showError("Error adding to waitlist");
+                showError("Could not add to waitlist (no rows inserted).");
+            }
+
+        } catch (SQLException ex) {
+            String msg = ex.getMessage();
+            if (msg != null && msg.toLowerCase().contains("duplicate")) {
+                showError("That user is already on the waitlist for this book.");
+            } else if (msg != null && msg.toLowerCase().contains("foreign key")) {
+                showError("User or book not found (FK constraint). Please check username and ISBN.");
+            } else {
+                ex.printStackTrace();
+                showError("Could not update waitlist: " + ex.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,9 +116,26 @@ public class WaitListController {
         }
     }
 
+    // Optional: wire this to a "Refresh" button or ISBN field onAction
     @FXML
-    private void handleReturnHome() {
-        switchScene("HomePageA.fxml");
+    private void handleRefresh() {
+        String isbn = isbnField.getText() == null ? "" : isbnField.getText().trim();
+        if (isbn.isEmpty()) {
+            loadAllWaitlist();
+        } else {
+            loadWaitlistForIsbn(isbn);
+        }
+    }
+
+    private void loadAllWaitlist() {
+        try {
+            WaitListDAO dao = new WaitListDAO();
+            List<WaitListEntry> entries = dao.getAll();
+            waitlistTable.setItems(FXCollections.observableArrayList(entries));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not load waitlist: " + e.getMessage());
+        }
     }
 
     private void loadWaitlistForIsbn(String isbn) {
@@ -100,6 +147,11 @@ public class WaitListController {
             e.printStackTrace();
             showError("Could not load waitlist: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleReturnHome() {
+        switchScene("HomePageA.fxml");
     }
 
     private void switchScene(String fxmlName) {
@@ -115,7 +167,7 @@ public class WaitListController {
     }
 
     private void showError(String msg) {
-        Alert a = new Alert(AlertType.ERROR);
+        Alert a = new Alert(Alert.AlertType.ERROR);
         a.setTitle("Error");
         a.setHeaderText(null);
         a.setContentText(msg);
@@ -123,7 +175,7 @@ public class WaitListController {
     }
 
     private void showInfo(String msg) {
-        Alert a = new Alert(AlertType.INFORMATION);
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Waitlist");
         a.setHeaderText(null);
         a.setContentText(msg);

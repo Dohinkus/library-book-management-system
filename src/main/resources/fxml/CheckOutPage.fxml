@@ -32,9 +32,9 @@
             <Button fx:id="RetrunHomeButton" layoutX="503.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleReturnHome" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #830202;" text="Return Home" textFill="WHITE" />
             <TableView fx:id="CheckoutTable" layoutX="293.0" layoutY="94.0" prefHeight="298.0" prefWidth="300.0" style="-fx-background-color: #FAF3DD;">
               <columns>
+                <TableColumn fx:id="UsernameColumn" text="Username" prefWidth="116.0" />
                 <TableColumn fx:id="isbnColumn" prefWidth="75.0" text="ISBN" />
                 <TableColumn fx:id="dateCheckOutColumn" prefWidth="108.0" text="Date CheckedOut" />
-                  <TableColumn fx:id="dateReturnedColumn" prefWidth="116.0" text="Date Returned" />
               </columns>
             </TableView>
             <Label layoutX="300.0" layoutY="71.0" prefHeight="17.0" prefWidth="193.0" text="Check Outs Selected User Has">

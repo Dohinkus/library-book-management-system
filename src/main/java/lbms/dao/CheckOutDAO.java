@@ -115,4 +115,58 @@ public class CheckOutDAO {
     return list;
     }
 
+    public List<CheckOut> getAllReturned() throws SQLException {
+    String sql = """
+        SELECT * FROM CheckOut
+        WHERE ReturnDate IS NOT NULL
+        ORDER BY DateCheckedOut
+        """;
+
+    List<CheckOut> list = new ArrayList<>();
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            list.add(new CheckOut(
+                    rs.getInt("OrderId"),
+                    rs.getString("Username"),
+                    rs.getString("ISBN"),
+                    rs.getString("DateCheckedOut"),
+                    rs.getString("ReturnDate")
+            ));
+        }
+    }
+    return list;
+}
+
+public List<CheckOut> getReturnedForUser(String username) throws SQLException {
+    String sql = """
+        SELECT * FROM CheckOut
+        WHERE Username = ? AND ReturnDate IS NOT NULL
+        ORDER BY DateCheckedOut
+        """;
+
+    List<CheckOut> list = new ArrayList<>();
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            list.add(new CheckOut(
+                    rs.getInt("OrderId"),
+                    rs.getString("Username"),
+                    rs.getString("ISBN"),
+                    rs.getString("DateCheckedOut"),
+                    rs.getString("ReturnDate")
+                ));
+            }
+        }
+        return list;
+    }
+
 }

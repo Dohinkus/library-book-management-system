@@ -15,6 +15,7 @@ seed-data.sql (if sample data is needed)
 # More information
 
 - drop-all-tables.sql
+
 What this file is:
 A reset script that forcefully removes all tables from the LBMS database.
 
@@ -29,6 +30,7 @@ Run it directly in MySQL. Example:
 mysql < drop-all-tables.sql
 
 - mysql-ddl.sql
+
 What this file is:
 The main schema definition for the LBMS database. It creates the database, tables, indexes, and foreign keys.
 
@@ -43,6 +45,7 @@ Run this file after drop-all-tables.sql. Example:
 mysql < mysql-ddl.sql
 
 - relational-schema.sql
+
 What this file is:
 A non-executable description of the database tables in a logical/schema notation. It documents the relational design but is not meant to be run by MySQL.
 
@@ -56,6 +59,7 @@ How to use it:
 Do not run this file. Read it for documentation only.
 
 - seed-data.sql
+
 What this file is:
 A data seeding script that fills the LBMS database with example data for testing (publishers, authors, books, accounts, checkouts, etc.).
 
@@ -70,6 +74,7 @@ Run it after mysql-ddl.sql. Example:
 mysql < seed-data.sql
 
 - views.sql
+
 What this file is:
 A script that creates database views such as BookAvailability and ActiveCheckouts. These views simplify common queries.
 

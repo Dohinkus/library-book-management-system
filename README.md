@@ -18,22 +18,35 @@ The project follows a layered architecture with clear separation between the use
 
 Requirements: Install Java JDK 17, Maven, MySQL Community Server 8.0, MySQL Workbench, and Git
 
+
 Run MySQL Server and run the scripts in the /db files ([drop-all-tables.sql] -> mysql-ddl.sql -> views.sql -> seed-data.sql) in Workbench
 
+
 Make sure your database is called "LBMS" and your user/pass is "root" "root"
+
 OR edit src/main/java/lbms/utils/DBConnection.java to match your database name and login info
 
+
 Clone the repository:
-run: git clone https://github.com/Dohinkus/library-book-management-system.git
+```
+git clone https://github.com/Dohinkus/library-book-management-system.git
+```
 
 Make sure you are in the repository's directory:
-run: cd library-book-management-system
+```
+cd library-book-management-system
+```
 
 Compile the application:
-Run: mvn clean compile
+```
+mvn clean compile
+```
 
 Run the application:
-Run: mvn exec:java
+```
+mvn exec:java
+```
+
 
 The application will start, and you can login as "admin_demo" "admin123" or as "member_demo" "member123" to demo the application
 There's currently no logout button, so close and re-run the application if you wish to demo both admin (librarian) and member (library member)

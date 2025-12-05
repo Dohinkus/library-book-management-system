@@ -4,9 +4,13 @@ CREATE DATABASE IF NOT EXISTS LBMS
 
 USE LBMS;
 
+------------------------------------------------------------
+-- PUBLISHERS & BOOKS
+------------------------------------------------------------
+
 CREATE TABLE Publisher (
     Id          INT AUTO_INCREMENT PRIMARY KEY,
-    Name        VARCHAR(255) UNIQUE,
+    Name        VARCHAR(255) NOT NULL UNIQUE,
     Address     VARCHAR(255)
 ) ENGINE=InnoDB;
 
@@ -16,7 +20,7 @@ CREATE TABLE Book (
     Title           VARCHAR(255) NOT NULL,
     PublishDate     DATE,
     Pages           INT,
-    Edition         VARCHAR(50),
+    Edition         VARCHAR(100),
     Genre           VARCHAR(100),
     pId             INT,
     FOREIGN KEY (pId) REFERENCES Publisher(Id)
@@ -24,20 +28,28 @@ CREATE TABLE Book (
         ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+-- Physical copy of a book
 CREATE TABLE PhysicalBook (
     ISBN        VARCHAR(20) PRIMARY KEY,
     CoverType   VARCHAR(50),
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Digital copy of a book
 CREATE TABLE DigitalBook (
     ISBN        VARCHAR(20) PRIMARY KEY,
     FileType    VARCHAR(50),
     FileSizeMB  DECIMAL(10,2),
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+------------------------------------------------------------
+-- SERIES / VOLUMES
+------------------------------------------------------------
 
 CREATE TABLE Series (
     Id      INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,10 +61,16 @@ CREATE TABLE Volume (
     SeriesId    INT NOT NULL,
     VolNum      INT NOT NULL,
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (SeriesId) REFERENCES Series(Id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+------------------------------------------------------------
+-- ACCOUNTS (APP, EMPLOYEE, MEMBER)
+------------------------------------------------------------
 
 CREATE TABLE AppAccount (
     Username    VARCHAR(50) PRIMARY KEY,
@@ -71,6 +89,7 @@ CREATE TABLE EmployeeAcc (
     StaffId     INT UNIQUE NOT NULL,
     JobTitle    VARCHAR(100),
     FOREIGN KEY (Username) REFERENCES AppAccount(Username)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
@@ -79,8 +98,13 @@ CREATE TABLE MemberAcc (
     CardNum     INT UNIQUE NOT NULL,
     DisplayName VARCHAR(100),
     FOREIGN KEY (Username) REFERENCES AppAccount(Username)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+------------------------------------------------------------
+-- AUTHORS & BOOK–AUTHOR RELATION
+------------------------------------------------------------
 
 CREATE TABLE Author (
     Id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,24 +119,34 @@ CREATE TABLE BookAuthor (
     AuthorNth   INT NOT NULL,
     PRIMARY KEY (ISBN, aId),
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (aId) REFERENCES Author(Id)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+------------------------------------------------------------
+-- CHECKOUTS & WAITLIST
+------------------------------------------------------------
 
 CREATE TABLE CheckOut (
     OrderId         INT AUTO_INCREMENT PRIMARY KEY,
     Username        VARCHAR(50) NOT NULL,
     ISBN            VARCHAR(20) NOT NULL,
-    DateCheckedOut  DATE NOT NULL,
-    ReturnDate      DATE,
+    -- DATETIME for richer timestamp data,
+    -- but still relies on ReturnDate IS NULL for "active" checkouts
+    DateCheckedOut  DATETIME NOT NULL,
+    ReturnDate      DATETIME DEFAULT NULL,
     FOREIGN KEY (Username) REFERENCES AppAccount(Username)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Improves checkout availability queries
+-- Improves checkout availability queries (current & view-compatible)
 CREATE INDEX idx_checkout_active 
     ON CheckOut(ISBN, ReturnDate);
 
@@ -122,8 +156,10 @@ CREATE TABLE WaitList (
     DatePlaced      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (Username, ISBN),
     FOREIGN KEY (Username) REFERENCES AppAccount(Username)
+        ON UPDATE CASCADE
         ON DELETE CASCADE,
     FOREIGN KEY (ISBN) REFERENCES Book(ISBN)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

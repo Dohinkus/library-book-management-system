@@ -14,6 +14,28 @@ The project follows a layered architecture with clear separation between the use
 
 ---
 
+## How to Run Everything
+
+Requirements: Install Java JDK 17, Maven, and MySQL Community Server 8.0
+
+Run MySQL Server and run the scripts in the /db files ([drop-all-tables.sql] -> mysql-ddl.sql -> views.sql -> seed-data.sql)
+
+Make sure your database is called "LBMS" and your user/pass is "root" "root"
+OR edit src/main/java/lbms/utils/DBConnection.java to match your database name and login info 
+
+Clone the repository:
+
+git clone https://github.com/Dohinkus/library-book-management-system.git
+cd library-book-management-system
+
+Run: mvn clean compile
+Run: mvn exec:java
+
+The application will start, and you can login as "admin_demo" "admin123" or as "member_demo" "member123" to demo the application
+There's currently no logout button, so close and re-run the application if you wish to demo both admin (librarian) and member (library member)
+
+---
+
 ## Project Structure
 
 All Java source code is located under:
@@ -59,33 +81,6 @@ Examples:
 - feature/db-schema-everette
 
 All changes must be merged into main through pull requests.
-
----
-
-## Getting Started
-
-Clone the repository:
-
-git clone https://github.com/Dohinkus/library-book-management-system.git
-cd library-book-management-system
-
-Download JDK 17
-
-Download and setup Maven in your Path for environment variables
-
----
-
-## Running the Application
-
-In the cloned directory, run:
-
-mvn clean compile
-
-If successful, then run:
-
-mvn exec:java
-
-This starts the program.
 
 ---
 
